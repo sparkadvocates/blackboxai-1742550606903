@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ainprokash Webview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 56px); /* Subtract toolbar height */
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col h-screen">
+        <!-- Toolbar -->
+        <div class="bg-white shadow-md p-3 flex items-center space-x-4">
+            <button id="backBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Go Back">
+                <i class="fas fa-arrow-left text-gray-600"></i>
+            </button>
+            <button id="forwardBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Go Forward">
+                <i class="fas fa-arrow-right text-gray-600"></i>
+            </button>
+            <button id="reloadBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Reload">
+                <i class="fas fa-redo text-gray-600"></i>
+            </button>
+            <button id="homeBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Home">
+                <i class="fas fa-home text-gray-600"></i>
+            </button>
+            <div class="flex-1 bg-gray-50 rounded-lg px-4 py-2 text-gray-600">
+                ainprokash.com
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-1 relative">
+            <div class="iframe-container">
+                <iframe id="mainFrame" src="https://ainprokash.com" allowfullscreen></iframe>
+            </div>
+
+            <!-- Loading spinner -->
+            <div id="loadingSpinner" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div class="loading-spinner"></div>
+            </div>
+
+            <!-- Error overlay -->
+            <div id="errorOverlay" class="hidden fixed inset-0 bg-white bg-opacity-95 flex items-center justify-center">
+                <div class="text-center p-8">
+                    <i class="fas fa-exclamation-circle text-red-500 text-5xl mb-4"></i>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Connection Error</h2>
+                    <p id="errorMessage" class="text-gray-600 mb-4">Unable to load the webpage.</p>
+                    <button id="retryBtn" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-redo mr-2"></i> Retry
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const iframe = document.getElementById('mainFrame');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorOverlay = document.getElementById('errorOverlay');
+        const backBtn = document.getElementById('backBtn');
+        const forwardBtn = document.getElementById('forwardBtn');
+        const reloadBtn = document.getElementById('reloadBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const retryBtn = document.getElementById('retryBtn');
+
+        const HOME_URL = 'https://ainprokash.com';
+
+        // Show loading spinner when iframe starts loading
+        iframe.addEventListener('loadstart', () => {
+            loadingSpinner.classList.remove('hidden');
+            errorOverlay.classList.add('hidden');
+        });
+
+        // Hide loading spinner when iframe finishes loading
+        iframe.addEventListener('load', () => {
+            loadingSpinner.classList.add('hidden');
+        });
+
+        // Handle navigation buttons
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+
+        forwardBtn.addEventListener('click', () => {
+            window.history.forward();
+        });
+
+        reloadBtn.addEventListener('click', () => {
+            iframe.src = iframe.src;
+        });
+
+        homeBtn.addEventListener('click', () => {
+            iframe.src = HOME_URL;
+        });
+
+        retryBtn.addEventListener('click', () => {
+            errorOverlay.classList.add('hidden');
+            iframe.src = iframe.src;
+        });
+
+        // Handle iframe errors
+        iframe.addEventListener('error', () => {
+            loadingSpinner.classList.add('hidden');
+            errorOverlay.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
