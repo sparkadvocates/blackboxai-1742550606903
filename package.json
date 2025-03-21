@@ -1,0 +1,14 @@
+{
+  "name": "ainprokash-webview",
+  "version": "1.0.0",
+  "description": "A webview application for ainprokash.com",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron . --no-sandbox"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^26.0.0"
+  }
+}
